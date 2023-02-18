@@ -27,6 +27,18 @@ export class AuthService {
 
       const { password, ...data } = createAuthDto;
 
+      if (await this.userRepository.findOne({ where: { email: data.email } })) {
+        throw new Error('Email already exists');
+      }
+
+      if (await this.userRepository.findOne({ where: { dni: data.dni } })) {
+        throw new Error('DNI already exists');
+      }
+
+      if (password.length < 6) {
+        throw new Error('Password must be at least 6 characters');
+      }
+
       const user = this.userRepository.create({
         ...data,
         password: bcrypt.hashSync(password, 10),
@@ -34,8 +46,12 @@ export class AuthService {
 
       await this.userRepository.save(user);
 
+      const { password: _, ...result } = user;
+
+      return result;
+
     } catch (error) {
-      console.log(error);
+      throw new Error(error.message);
     }
   }
 

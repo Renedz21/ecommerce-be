@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Cart } from 'src/cart/entities/cart.entity';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, JoinColumn } from 'typeorm';
 
 @Entity('users')
 export class User {
@@ -13,6 +14,21 @@ export class User {
         unique: true,
     })
     email: string;
+
+    @Column('text')
+    address: string;
+
+    @Column('text')
+    phone: string;
+
+    @Column('text', {
+        unique: true,
+    })
+    dni: string;
+
+    @OneToMany(() => Cart, cart => cart.user)
+    @JoinColumn({ name: 'userId' })
+    carts: Cart[];
 
     @Column('text', {
         select: false,

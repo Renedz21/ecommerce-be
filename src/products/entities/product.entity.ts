@@ -1,10 +1,11 @@
+import { CartItem } from "src/cart/entities/cartItem.entity";
 import { Category } from "src/category/entities/category.entity";
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity('products')
 export class Product {
-    @PrimaryGeneratedColumn('uuid')
-    id: string;
+    @PrimaryGeneratedColumn('increment')
+    id: number;
 
     @Column('text', {
         unique: true
@@ -24,6 +25,9 @@ export class Product {
 
     @Column('text')
     image: string;
+
+    @OneToMany(() => CartItem, item => item.product)
+    cartItems: CartItem[];
 
     @ManyToOne(() => Category, category => category.product)
     category: Category;
