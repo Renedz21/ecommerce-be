@@ -60,12 +60,18 @@ export class ProductsService {
     }
   }
 
-  async findOne(id: string | number) {
+  async findOne(id: number) {
 
     try {
 
-      return null
+      const product = await this.productRepository.findOne({
+        where: {
+          id
+        },
+        relations: ['category']
+      });
 
+      return product;
     } catch (error) {
 
     }

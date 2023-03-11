@@ -19,16 +19,20 @@ export class CartService {
   ) { }
 
   async saveCart(cart: any, userId: any) {
+
+    console.log('userId', userId.userId)
+    console.log('cart', cart);
+
     try {
       const existedCart = await this.cartRepository.findOne({
         where: { user: { id: userId.userId } },
       });
-      console.log('existedCart', existedCart);
+
+      console.log('existedCart', existedCart.id);
+
       if (existedCart) {
-
-
         cart.forEach(async (element: any) => {
-          this.addToCart(element.quantity);
+          this.addToCart(element, existedCart.id);
         });
 
       } else {
@@ -65,9 +69,12 @@ export class CartService {
     }
   }
 
-  private async addToCart(quantity: number) {
+  private async addToCart(element: any, cartId: any) {
     const cartItem = new CartItem();
-    cartItem.quantity = quantity;
+    cartItem.product = element.id;
+    cartItem.cart = cartId;
+    cartItem.quantity = element.quantity;
+    await this.cartItemRepository.save(cartItem);
     return cartItem;
   }
 

@@ -15,7 +15,7 @@ export class CategoryService {
 
   async create(createCategoryDto: CreateCategoryDto) {
     try {
-      const category = await this.categoryRepository.create(createCategoryDto);
+      const category = this.categoryRepository.create(createCategoryDto);
       await this.categoryRepository.save(category);
       return category;
     } catch (error) {
@@ -28,7 +28,7 @@ export class CategoryService {
       const categories = await this.categoryRepository.find();
       return categories;
     } catch (error) {
-
+      console.log(error);
     }
   }
 
@@ -36,8 +36,21 @@ export class CategoryService {
     return `This action returns a #${id} category`;
   }
 
-  update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    return `This action updates a #${id} category`;
+  async update(id: string, updateCategoryDto: UpdateCategoryDto) {
+    try {
+
+      const category = await this.categoryRepository.findOne({
+        where: {
+          id
+        }
+      });
+      const updatedCategory = Object.assign(category, updateCategoryDto);
+      await this.categoryRepository.save(updatedCategory);
+      return updatedCategory;
+
+    } catch (error) {
+
+    }
   }
 
   remove(id: number) {
